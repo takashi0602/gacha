@@ -1,72 +1,103 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        gacha
-      </h1>
-      <h2 class="subtitle">
-        My wondrous Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+  <div class="container p-5">
+    <h1 class="c-title text-center mb-5">ITC忘年会~プレゼント交換~</h1>
+
+    <div v-if="!started">
+      <div class="mb-5">
+        <p>人数を入力してね！</p>
+        <div class="d-flex align-items-end">
+          <input type="number" class="form-control w-25 mr-3" v-model="peoples" />
+          <div>人</div>
+        </div>
+        <p v-if="notPeoples" class="text-danger">1人以上入力してください。</p>
+      </div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary px-5 py-2" @click="start">スタート</button>
       </div>
     </div>
+
+    <div v-if="started">
+      <div>残りカプセル：{{gachaList.length}}個</div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary px-5 py-2" @click="turn">回す</button>
+      </div>
+    </div>
+
+    <finish-modal
+      v-if="finished"
+      @close="closeFinishModal"
+    />
+
+    <modal
+      v-if="showModal"
+      :number="hitPeopleNumber"
+      @returnCapsule="returnCapsule"
+      @continueGacha="continueGacha"
+    />
+
   </div>
 </template>
 
 <script>
-  import Logo from '~/components/Logo.vue'
+import Modal from "~/components/Modal"
+import FinishModal from "~/components/FinishModal"
 
-  export default {
-    components: {
-      Logo
+export default {
+  components: {
+    Modal,
+    FinishModal
+  },
+  data() {
+    return {
+      peoples: 1,
+      gachaList: [],
+      notPeoples: false,
+      started: false,
+      finished: false,
+      hitPeopleNumber: 0,
+      showModal: false,
+      randomIndex: 0
+    }
+  },
+  methods: {
+    start() {
+      this.notPeoples = false;
+      if (this.peoples <= 0) {
+        this.notPeoples = true;
+        return;
+      }
+      for (let i = 1; i <= this.peoples; i++) this.gachaList.push(i);
+      this.started = true;
+    },
+    turn() {
+      this.randomIndex = Math.floor(Math.random() * this.gachaList.length);
+      this.hitPeopleNumber = this.gachaList[this.randomIndex];
+      this.openModal();
+    },
+    openModal() {
+      this.showModal = true;
+    },
+    finish() {
+      this.finished = true;
+    },
+    returnCapsule() {
+      this.showModal = false;
+    },
+    continueGacha() {
+      this.gachaList.splice(this.randomIndex, 1);
+      this.showModal = false;
+      if (this.gachaList.length === 0) this.finish();
+    },
+    closeFinishModal() {
+      this.started = false;
+      this.finished = false;
     }
   }
+}
 </script>
 
-<style>
-  .container {
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-
-  .title {
-    font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    display: block;
-    font-weight: 300;
-    font-size: 100px;
-    color: #35495e;
-    letter-spacing: 1px;
-  }
-
-  .subtitle {
-    font-weight: 300;
-    font-size: 42px;
-    color: #526488;
-    word-spacing: 5px;
-    padding-bottom: 15px;
-  }
-
-  .links {
-    padding-top: 15px;
-  }
+<style scoped>
+.c-title {
+  font-size: 64px;
+}
 </style>
