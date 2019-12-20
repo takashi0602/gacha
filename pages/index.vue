@@ -18,6 +18,7 @@
 
     <div v-if="started">
       <div>残りカプセル：{{gachaList.length}}個</div>
+      <Gacha :startAnimation="startAnimation" />
       <div class="text-center">
         <button type="button" class="btn btn-primary px-5 py-2" @click="turn">回す</button>
       </div>
@@ -39,11 +40,13 @@
 </template>
 
 <script>
+import Gacha from "~/components/Gacha"
 import Modal from "~/components/Modal"
 import FinishModal from "~/components/FinishModal"
 
 export default {
   components: {
+    Gacha,
     Modal,
     FinishModal
   },
@@ -56,7 +59,8 @@ export default {
       finished: false,
       hitPeopleNumber: 0,
       showModal: false,
-      randomIndex: 0
+      randomIndex: 0,
+      startAnimation: false
     }
   },
   methods: {
@@ -72,7 +76,8 @@ export default {
     turn() {
       this.randomIndex = Math.floor(Math.random() * this.gachaList.length);
       this.hitPeopleNumber = this.gachaList[this.randomIndex];
-      this.openModal();
+      this.startAnimation = true;
+      setTimeout(this.openModal, 3500);
     },
     openModal() {
       this.showModal = true;
@@ -81,10 +86,12 @@ export default {
       this.finished = true;
     },
     returnCapsule() {
+      this.startAnimation = false;
       this.showModal = false;
     },
     continueGacha() {
       this.gachaList.splice(this.randomIndex, 1);
+      this.startAnimation = false;
       this.showModal = false;
       if (this.gachaList.length === 0) this.finish();
     },
