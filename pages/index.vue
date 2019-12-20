@@ -77,7 +77,7 @@ export default {
       this.randomIndex = Math.floor(Math.random() * this.gachaList.length);
       this.hitPeopleNumber = this.gachaList[this.randomIndex];
       this.startAnimation = true;
-      setTimeout(this.openModal, 3500);
+      setTimeout(this.openModal, 4000);
     },
     openModal() {
       this.showModal = true;
