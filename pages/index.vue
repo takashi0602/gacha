@@ -2,7 +2,7 @@
   <div class="container p-5">
     <h1 class="c-title text-center mb-5">ITC忘年会~プレゼント交換~</h1>
 
-    <div v-if="!started">
+    <form v-if="!started" @submit.prevent="start">
       <div class="mb-5">
         <p>人数を入力してね！</p>
         <div class="d-flex align-items-end">
@@ -12,9 +12,9 @@
         <p v-if="notPeoples" class="text-danger">1人以上入力してください。</p>
       </div>
       <div class="text-center">
-        <button type="button" class="btn btn-primary px-5 py-2" @click="start">スタート</button>
+        <button class="btn btn-primary px-5 py-2" @click="start">スタート</button>
       </div>
-    </div>
+    </form>
 
     <div v-if="started">
       <div>残りカプセル：{{gachaList.length}}個</div>
